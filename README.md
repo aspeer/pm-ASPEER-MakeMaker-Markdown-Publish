@@ -1,0 +1,45 @@
+# ASPEER::MakeMaker::Markdown::Publish
+
+Add MakeMaker targets for publishing Perl distribution documentation through
+MkDocs, VitePress, Docusaurus, or Astro Starlight.
+
+The module is deliberately a thin adapter. It reads
+`META_MERGE.x_documentation.publish` from the live `WriteMakefile` arguments,
+encodes that configuration into the generated Makefile, and delegates every
+target to `ASPEER::Markdown::Publish`.
+
+```perl
+use ExtUtils::MakeMaker;
+use ASPEER::MakeMaker::Markdown::Publish;
+
+WriteMakefile(
+    NAME         => 'Example',
+    VERSION_FROM => 'lib/Example.pm',
+    META_MERGE   => {
+        'meta-spec' => {version => 2},
+        x_documentation => {
+            publish => {
+                sources => ['doc'],
+                mkdocs  => {config => 'doc/mkdocs/mkdocs.yml'},
+            },
+        },
+    },
+);
+```
+
+After regenerating the Makefile:
+
+```sh
+make mkdocs_build
+make mkdocs_serve
+make mkdocs_gh_publish
+# Explicit remote update:
+make mkdocs_gh_push
+```
+
+The same four targets are available with `vitepress_`, `docusaurus_`, and
+`starlight_` prefixes. Local publication never pushes; only `*_gh_push` updates
+a remote.
+
+See the [module documentation](lib/ASPEER/MakeMaker/Markdown/Publish.pm.md) and
+[examples](examples/README.md).
