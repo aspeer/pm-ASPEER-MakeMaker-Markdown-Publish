@@ -11,96 +11,78 @@ use ASPEER::MakeMaker::Markdown::Publish;
 WriteMakefile(
     NAME         => 'Example',
     VERSION_FROM => 'lib/Example.pm',
-
     META_MERGE => {
         'meta-spec' => {version => 2},
         x_documentation => {
             publish => {
+                module  => 'ASPEER::Markdown::Publish::MkDocs',
                 sources => ['doc'],
-                mkdocs  => {
-                    config => 'doc/mkdocs/mkdocs.yml',
-                },
+                config  => 'doc/mkdocs/mkdocs.yml',
             },
         },
     },
 );
 ```
 
-This adds build, preview, local publication, and explicit push targets for
-MkDocs, VitePress, Docusaurus, and Astro Starlight.
-
 # DESCRIPTION
 
-`ASPEER::MakeMaker::Markdown::Publish` is a thin MakeMaker integration layer.
-It installs Makefile targets, reads author-controlled configuration from
-`META_MERGE.x_documentation.publish`, and passes that configuration to
-`ASPEER::Markdown::Publish` when a target is invoked.
+This is a thin MakeMaker adapter. It reads `META_MERGE.x_documentation.publish`
+from the live `WriteMakefile` arguments and passes the settings to
+`ASPEER::Markdown::Publish` when a target is invoked. It does not assemble
+documents, run a publishing engine, or update Git itself.
 
-It does not assemble Markdown, run site generators, or update publication
-branches itself. Those operations belong to `ASPEER::Markdown::Publish` and
-remain available outside MakeMaker.
+The selected `module` is one of `ASPEER::Markdown::Publish::MkDocs`,
+`::VitePress`, `::Docusaurus`, or `::Starlight`. One engine is active at a
+time. Its `config` and other engine-specific options are top-level values
+in the `publish` hash. Alternatively, set only `config_file` to a JSON file
+containing the selected `module` and settings. That file is read when the
+target runs, so edits do not require a regenerated Makefile.
 
-Configuration is encoded into a private generated Makefile macro. The targets
-therefore use the values supplied to the live `WriteMakefile` call and never
-execute `Makefile.PL` to rediscover settings. No secondary generated
-configuration file is required.
+Configuration supplied inline is encoded into the generated Makefile. The
+targets do not re-run `Makefile.PL` to discover it.
 
 # TARGETS
 
-Each backend supplies the following target family:
-
 ```text
-mkdocs_build
-mkdocs_serve
-mkdocs_gh_publish
-mkdocs_gh_push
+publish_build
+publish_serve
+publish_gh
+publish_cloudflare
 ```
 
-Replace `mkdocs` with `vitepress`, `docusaurus`, or `starlight` for the other
-backends.
-
-`*_gh_publish` builds and commits the rendered site to the configured local
-publication branch. It does not push. `*_gh_push` is the explicit remote
-operation.
+`publish_build` prepares and renders the site. `publish_serve` starts the
+selected engine's foreground local server. `publish_gh` builds, updates the
+publication branch, and pushes it to the configured remote (`github` by
+default). `publish_cloudflare` builds and deploys the same site as Workers
+Static Assets using an authored Wrangler configuration. The last two targets
+are explicit, independent remote operations; neither calls the other.
 
 # CONFIGURATION
 
-The complete `publish` hash is passed unchanged to `ASPEER::Markdown::Publish`.
-Common values may be overridden by a backend-specific hash:
+MkDocs is used when `module` is omitted. Set `module` in
+`META_MERGE.x_documentation.publish` to select another engine, or set
+`MARKDOWN_PUBLISH_MODULE` to override it at runtime.
 
-```perl
-x_documentation => {
-    publish => {
-        sources => [qw(doc lib bin)],
-        output  => 'site',
-        branch  => 'gh-pages',
-        remote  => 'origin',
+Without `sources`, an existing `doc/` is the publication boundary. Only when
+`doc/` is absent are module and executable sidecars the default. An explicit
+`sources` list is exact. `output`, `name`, `branch`, and `remote` are common
+settings; see the selected engine module for its own options.
 
-        mkdocs => {
-            config      => 'doc/mkdocs/mkdocs.yml',
-            config_mode => 'inherit',
-            address     => '127.0.0.1:8000',
-        },
-
-        docusaurus => {
-            config => 'doc/docusaurus/docusaurus.config.js',
-        },
-    },
-}
-```
-
-Without `sources`, `ASPEER::Markdown::Publish` uses `doc/` when it exists and
-falls back to module and executable sidecars only when `doc/` is absent.
+For Workers Static Assets, set `cloudflare => {config => 'wrangler.jsonc'}`
+inside `publish`. This path selects a dedicated Worker configuration with its
+name and compatibility date. Optionally set `wrangler` to the executable path
+or `environment` to an authored Wrangler environment in the same `cloudflare`
+hash. Wrangler uses its own login or environment for authentication; do not
+put credentials in metadata. Deployment does not change Git.
 
 # ERRORS
 
 `x_documentation` and `x_documentation.publish` must be hash references when
-supplied. Invalid metadata and failed publication targets are fatal.
+supplied. Invalid configuration and failed target actions are fatal.
 
 # SEE ALSO
 
-`ASPEER::Markdown::Publish`, `ASPEER::MakeMaker`,
-`ASPEER::MakeMaker::Markdown::Pod`
+`ASPEER::Markdown::Publish`, `ASPEER::MakeMaker::Markdown::Pod`
 
 # AUTHOR
 
@@ -108,10 +90,6 @@ Andrew Speer <andrew.speer@isolutions.com.au>
 
 # LICENSE AND COPYRIGHT
 
-This file is part of ASPEER::MakeMaker::Markdown::Publish.
-
-This software is copyright (c) 2026 by Andrew Speer
-<andrew.speer@isolutions.com.au>.
-
-This is free software; you can redistribute it and/or modify it under the same
-terms as the Perl 5 programming language system itself.
+This file is part of ASPEER::MakeMaker::Markdown::Publish. Copyright (c) 2026
+Andrew Speer. This is free software; you can redistribute it and/or modify it
+under the same terms as Perl 5.

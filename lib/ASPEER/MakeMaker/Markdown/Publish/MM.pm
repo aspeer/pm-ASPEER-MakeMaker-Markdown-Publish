@@ -76,10 +76,10 @@ sub publish {
 
 
     #  Decode the Makefile-safe metadata payload and delegate the requested
-    #  backend action without re-running Makefile.PL.
+    #  action without re-running Makefile.PL.
     #
     my ($self, $param_hr)=(shift(), arg(@_));
-    my ($encoded, $backend, $action)=@{$param_hr->{'ARGV_AR'}};
+    my ($encoded, $action)=@{$param_hr->{'ARGV_AR'}};
     die "publication configuration unavailable\n"
         unless defined($encoded) && length($encoded);
     my $publish_hr=decode_json(decode_base64($encoded));
@@ -87,7 +87,7 @@ sub publish {
         unless ref($publish_hr) eq 'HASH';
     require ASPEER::Markdown::Publish;
     my $publish_or=ASPEER::Markdown::Publish->new($publish_hr);
-    return $publish_or->run($backend, $action);
+    return $publish_or->run($action);
 
 }
 
@@ -117,12 +117,12 @@ Makefile-safe Base64 value.
 ## publish
 
 Decodes the configuration passed by the generated target, constructs
-`ASPEER::Markdown::Publish`, and invokes the requested backend action.
+`ASPEER::Markdown::Publish`, and invokes the requested action on the selected
+backend class.
 
 # SEE ALSO
 
 `ASPEER::MakeMaker::Markdown::Publish`, `ASPEER::Markdown::Publish`
-
 
 =end markdown
 
@@ -153,7 +153,8 @@ Makefile-safe Base64 value.
 =head2 publish
 
 Decodes the configuration passed by the generated target, constructs
-C<ASPEER::Markdown::Publish>, and invokes the requested backend action.
+C<ASPEER::Markdown::Publish>, and invokes the requested action on the selected
+backend class.
 
 
 =head1 SEE ALSO

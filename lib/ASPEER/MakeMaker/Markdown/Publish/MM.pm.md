@@ -20,7 +20,8 @@ Makefile-safe Base64 value.
 ## publish
 
 Decodes the configuration passed by the generated target, constructs
-`ASPEER::Markdown::Publish`, and invokes the requested backend action.
+`ASPEER::Markdown::Publish`, and invokes the requested action on the selected
+backend class.
 
 # SEE ALSO
 

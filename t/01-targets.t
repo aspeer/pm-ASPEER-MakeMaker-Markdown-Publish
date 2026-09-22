@@ -57,9 +57,9 @@ package ASPEER::Markdown::Publish;
 use JSON::PP qw(encode_json);
 sub new {my ($class, $config_hr)=@_; return bless({config => $config_hr}, $class)}
 sub run {
-    my ($self, $backend, $action)=@_;
+    my ($self, $action)=@_;
     open(my $output_fh, '>>', 'target.log') || die "unable to write target log: $!";
-    print {$output_fh} encode_json({config => $self->{'config'}, backend => $backend, action => $action}), "\n";
+    print {$output_fh} encode_json({config => $self->{'config'}, action => $action}), "\n";
     close($output_fh) || die "unable to close target log: $!";
     return 1;
 }
@@ -78,15 +78,12 @@ WriteMakefile(
         'meta-spec' => {version => 2},
         x_documentation => {
             publish => {
+                module  => 'ASPEER::Markdown::Publish::MkDocs',
                 sources => ['doc'],
                 output  => 'public',
-                mkdocs  => {
-                    config => 'doc/mkdocs/custom.yml',
-                    address => '127.0.0.1:8123',
-                },
-                docusaurus => {
-                    config => 'doc/docusaurus/custom.js',
-                },
+                config  => 'doc/mkdocs/custom.yml',
+                address => '127.0.0.1:8123',
+                cloudflare => {config => 'doc/wrangler.jsonc'},
             },
         },
     },
@@ -99,7 +96,7 @@ MAKEFILE_PL
 local $ENV{'PERL5LIB'}=join(
     $Config{'path_sep'},
     grep {defined($_) && length($_)}
-        ($adapter_lib_dn, $common_pm_fn, $local_lib_dn, $ENV{'PERL5LIB'})
+        ($local_lib_dn, $adapter_lib_dn, $common_pm_fn, $ENV{'PERL5LIB'})
 );
 is(system($^X, '-MASPEER::MakeMaker::Markdown::Publish', 'Makefile.PL'), 0,
     'Makefile.PL succeeds with publication plugin');
@@ -109,15 +106,14 @@ like($makefile, qr/^PUBLISH_PM_TARGET=\$\(PERLRUN\) -M\$\(PUBLISH_PM\).*-e /m,
 unlike($makefile, qr/^MM_PREFIX\s*=/m,
     'private Makefile prefix is not emitted');
 
-foreach my $backend (qw(mkdocs vitepress docusaurus starlight)) {
-    foreach my $action (qw(build serve gh_publish gh_push)) {
-        like($makefile, qr/^${backend}_${action} ::$/m,
-            "$backend $action target generated");
-        like($makefile,
-            qr/^\s*\@\$\(PUBLISH_PM_TARGET\) publish $backend $action$/m,
-            "$backend $action delegates explicitly");
-    }
+foreach my $action (qw(build serve gh cloudflare)) {
+    like($makefile, qr/^publish_${action} ::$/m,
+        "$action target generated");
+    like($makefile,
+        qr/^\s*\@\$\(PUBLISH_PM_TARGET\) publish $action$/m,
+        "$action target delegates explicitly");
 }
+unlike($makefile, qr/^mkdocs_build ::$/m, 'backend-specific targets are absent');
 
 
 #  Decode the private macro to prove values came from live META_MERGE input
@@ -126,25 +122,30 @@ my ($encoded)=$makefile=~/^PUBLISH_CONFIG\s*=\s*(\S+)$/m;
 ok(defined($encoded) && length($encoded), 'publication configuration macro generated');
 my $config_hr=decode_json(decode_base64($encoded));
 is_deeply($config_hr->{'sources'}, ['doc'], 'source directories encoded');
-is($config_hr->{'mkdocs'}{'config'}, 'doc/mkdocs/custom.yml',
+is($config_hr->{'module'}, 'ASPEER::Markdown::Publish::MkDocs',
+    'selected module encoded');
+is($config_hr->{'config'}, 'doc/mkdocs/custom.yml',
     'MkDocs configuration location encoded');
-is($config_hr->{'mkdocs'}{'address'}, '127.0.0.1:8123',
+is($config_hr->{'address'}, '127.0.0.1:8123',
     'MkDocs customization encoded');
-is($config_hr->{'docusaurus'}{'config'}, 'doc/docusaurus/custom.js',
-    'Docusaurus configuration location encoded');
+is_deeply($config_hr->{'cloudflare'}, {config => 'doc/wrangler.jsonc'},
+    'Cloudflare Worker configuration encoded');
 
 
 #  Execute generated targets through make and inspect the delegated calls
 #
 my $make=$Config{'make'} || 'make';
-is(system($make, 'mkdocs_build'), 0, 'generated MkDocs build target succeeds');
-is(system($make, 'docusaurus_gh_publish'), 0,
-    'generated Docusaurus local publication target succeeds');
+is(system($make, 'publish_build'), 0, 'generated build target succeeds');
+is(system($make, 'publish_serve'), 0, 'generated local server target delegates');
+is(system($make, 'publish_gh'), 0,
+    'generated all-in-one publication target delegates');
+is(system($make, 'publish_cloudflare'), 0,
+    'generated static-assets deployment target delegates');
 my @target=map {decode_json($_)} grep {length($_)} split(/\n/, slurp('target.log'));
 is_deeply(
-    [map {[$_->{'backend'}, $_->{'action'}]} @target],
-    [['mkdocs', 'build'], ['docusaurus', 'gh_publish']],
-    'generated targets dispatch backend and action'
+    [map {$_->{'action'}} @target],
+    ['build', 'serve', 'gh', 'cloudflare'],
+    'generated targets dispatch the selected action'
 );
 is_deeply($target[0]{'config'}, $config_hr,
     'generated target passes decoded publication configuration');

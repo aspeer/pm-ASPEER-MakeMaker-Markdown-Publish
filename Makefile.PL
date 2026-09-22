@@ -5,6 +5,17 @@ use version;
 
 use ExtUtils::MakeMaker;
 
+#  Add documentation maintenance when the companion plugin is installed
+#
+eval {
+    require ASPEER::MakeMaker::Markdown::Pod;
+    ASPEER::MakeMaker::Markdown::Pod->import();
+    1;
+};
+
+
+#  Add publication targets
+#
 eval {
     require ASPEER::MakeMaker::Markdown::Publish;
     ASPEER::MakeMaker::Markdown::Publish->import();
@@ -21,11 +32,12 @@ my %WriteMakefile=(
     DISTNAME         => 'ASPEER-MakeMaker-Markdown-Publish',
     VERSION_FROM     => 'lib/ASPEER/MakeMaker/Markdown/Publish.pm',
     ABSTRACT_FROM    => 'lib/ASPEER/MakeMaker/Markdown/Publish.pm',
+    EXE_FILES        => [],
     LICENSE          => 'perl',
     AUTHOR           => 'Andrew Speer <andrew.speer@isolutions.com.au>',
     MIN_PERL_VERSION => '5.008',
     PREREQ_PM        => {
-        'ASPEER::MakeMaker'          => '1.005',
+        'ASPEER::MakeMaker'          => '1.006',
         'ASPEER::Markdown::Publish'  => '0.001',
         'Cwd'                        => 0,
         'File::Basename'             => 0,
@@ -49,7 +61,17 @@ my %WriteMakefile=(
     },
     META_MERGE => {
         'meta-spec' => {version => 2},
+        prereqs     => {
+            configure => {
+                suggests => {
+                    'ASPEER::MakeMaker::Markdown::Pod' => '0.012',
+                },
+            },
+        },
         resources   => {
+            bugtracker => {
+                web => 'https://gitea.isolutions.com.au/aspeer/pm-ASPEER-MakeMaker-Markdown-Publish/issues',
+            },
             homepage   => 'https://gitea.isolutions.com.au/aspeer/pm-ASPEER-MakeMaker-Markdown-Publish',
             repository => {
                 type => 'git',

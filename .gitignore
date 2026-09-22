@@ -3,5 +3,6 @@ MYMETA.*
 blib/
 pm_to_blib
 *.bak
+*.sha
 ASPEER-MakeMaker-Markdown-Publish-*/
 ASPEER-MakeMaker-Markdown-Publish-*.tar.gz

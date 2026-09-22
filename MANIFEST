@@ -1,4 +1,4 @@
-.gitignore
+Changes
 cpanfile
 examples/basic/doc/guide.md
 examples/basic/Makefile.PL

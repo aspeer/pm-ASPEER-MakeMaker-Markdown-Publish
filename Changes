@@ -1,0 +1,7 @@
+Revision history for ASPEER-MakeMaker-Markdown-Publish
+
+0.001  2026-09-22
+
+    - Initial release.
+    - Add MakeMaker targets for each supported publishing backend.
+    - Pass x_documentation publishing configuration to the reusable engine.

@@ -1,6 +1,15 @@
+############################################################################
 #
 #  This file is part of ASPEER::MakeMaker::Markdown::Publish.
 #
+#  This software is copyright (c) 2026 by Andrew Speer
+#  <andrew.speer@isolutions.com.au>.
+#
+#  This is free software; you can redistribute it and/or modify it under
+#  the same terms as the Perl 5 programming language system itself.
+#
+############################################################################
+
 package ASPEER::MakeMaker::Markdown::Publish::MM::Constant;
 
 use strict qw(vars);
@@ -73,7 +82,6 @@ target dispatcher module, and fixed MakeMaker argument list used by
 
 The final argument is `PUBLISH_CONFIG`, the Base64-encoded JSON value derived
 from `META_MERGE.x_documentation.publish`.
-
 
 =end markdown
 

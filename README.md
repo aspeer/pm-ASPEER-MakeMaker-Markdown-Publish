@@ -20,7 +20,7 @@ WriteMakefile(
         x_documentation => {
             publish => {
                 sources => ['doc'],
-                mkdocs  => {config => 'doc/mkdocs/mkdocs.yml'},
+                config  => 'doc/mkdocs/mkdocs.yml',
             },
         },
     },
@@ -30,16 +30,21 @@ WriteMakefile(
 After regenerating the Makefile:
 
 ```sh
-make mkdocs_build
-make mkdocs_serve
-make mkdocs_gh_publish
-# Explicit remote update:
-make mkdocs_gh_push
+make publish_build
+make publish_serve
+# Explicit GitHub update:
+make publish_gh
+# Explicit Cloudflare Workers Static Assets deployment:
+make publish_cloudflare
 ```
 
-The same four targets are available with `vitepress_`, `docusaurus_`, and
-`starlight_` prefixes. Local publication never pushes; only `*_gh_push` updates
-a remote.
+MkDocs supplies all four targets when `module` is omitted. Set
+`MARKDOWN_PUBLISH_MODULE` to override the configured module at runtime.
+`publish_gh` builds and pushes the publication branch to the configured remote
+(`github` by default).
+`publish_cloudflare` builds and deploys the same site to the Worker named in
+an authored Wrangler config supplied as `cloudflare => {config => 'wrangler.jsonc'}`
+in `x_documentation.publish`. It neither commits nor pushes Git.
 
 See the [module documentation](lib/ASPEER/MakeMaker/Markdown/Publish.pm.md) and
 [examples](examples/README.md).
