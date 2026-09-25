@@ -85,6 +85,11 @@ sub publish {
     my $publish_hr=decode_json(decode_base64($encoded));
     die "publication configuration must decode to a hash reference\n"
         unless ref($publish_hr) eq 'HASH';
+    if (!exists($publish_hr->{'name'}) &&
+        !exists($publish_hr->{'config_file'}) &&
+        defined($param_hr->{'NAME'}) && length($param_hr->{'NAME'})) {
+        $publish_hr->{'name'}=$param_hr->{'NAME'};
+    }
     require ASPEER::Markdown::Publish;
     my $publish_or=ASPEER::Markdown::Publish->new($publish_hr);
     return $publish_or->run($action);
@@ -116,9 +121,11 @@ Makefile-safe Base64 value.
 
 ## publish
 
-Decodes the configuration passed by the generated target, constructs
-`ASPEER::Markdown::Publish`, and invokes the requested action on the selected
-backend class.
+Decodes the configuration passed by the generated target. When inline
+configuration does not contain `name`, it uses the MakeMaker `NAME` as the
+default site title. An external `config_file` remains authoritative. The method
+then constructs `ASPEER::Markdown::Publish` and invokes the requested action on
+the selected backend class.
 
 # SEE ALSO
 
@@ -152,9 +159,11 @@ Makefile-safe Base64 value.
 
 =head2 publish
 
-Decodes the configuration passed by the generated target, constructs
-C<ASPEER::Markdown::Publish>, and invokes the requested action on the selected
-backend class.
+Decodes the configuration passed by the generated target. When inline
+configuration does not contain C<name>, it uses the MakeMaker C<NAME> as the
+default site title. An external C<config_file> remains authoritative. The method
+then constructs C<ASPEER::Markdown::Publish> and invokes the requested action on
+the selected backend class.
 
 
 =head1 SEE ALSO

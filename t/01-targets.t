@@ -130,6 +130,8 @@ is($config_hr->{'address'}, '127.0.0.1:8123',
     'MkDocs customization encoded');
 is_deeply($config_hr->{'cloudflare'}, {config => 'doc/wrangler.jsonc'},
     'Cloudflare Worker configuration encoded');
+ok(!exists($config_hr->{'name'}),
+    'generated Makefile retains the user publication settings');
 
 
 #  Execute generated targets through make and inspect the delegated calls
@@ -138,7 +140,7 @@ my $make=$Config{'make'} || 'make';
 is(system($make, 'publish_build'), 0, 'generated build target succeeds');
 is(system($make, 'publish_serve'), 0, 'generated local server target delegates');
 is(system($make, 'publish_gh'), 0,
-    'generated all-in-one publication target delegates');
+    'generated local publication target delegates');
 is(system($make, 'publish_cloudflare'), 0,
     'generated static-assets deployment target delegates');
 my @target=map {decode_json($_)} grep {length($_)} split(/\n/, slurp('target.log'));
@@ -147,8 +149,24 @@ is_deeply(
     ['build', 'serve', 'gh', 'cloudflare'],
     'generated targets dispatch the selected action'
 );
-is_deeply($target[0]{'config'}, $config_hr,
-    'generated target passes decoded publication configuration');
+my $default_config_hr={%{$config_hr}, name => 'Sample'};
+is_deeply($target[0]{'config'}, $default_config_hr,
+    'distribution module name supplies the default site title');
+
+
+#  An explicit publication name overrides the distribution module name
+#
+my $configured=slurp('Makefile.PL');
+$configured=~s/(publish\s*=>\s*\{\n)/$1                name    => 'Sample documentation',\n/ ||
+    die "unable to construct named publication fixture";
+blurp('Makefile.PL', $configured);
+is(system($^X, '-MASPEER::MakeMaker::Markdown::Publish', 'Makefile.PL'), 0,
+    'Makefile.PL accepts an explicit publication name');
+is(system($make, 'publish_build'), 0,
+    'generated build target accepts the explicit publication name');
+@target=map {decode_json($_)} grep {length($_)} split(/\n/, slurp('target.log'));
+is($target[-1]{'config'}{'name'}, 'Sample documentation',
+    'explicit publication name overrides the default');
 
 
 #  Invalid custom metadata is rejected while generating the Makefile

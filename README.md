@@ -20,7 +20,7 @@ WriteMakefile(
         x_documentation => {
             publish => {
                 sources => ['doc'],
-                config  => 'doc/mkdocs/mkdocs.yml',
+                name    => 'Example documentation',
             },
         },
     },
@@ -32,7 +32,7 @@ After regenerating the Makefile:
 ```sh
 make publish_build
 make publish_serve
-# Explicit GitHub update:
+# Update the local publication branch:
 make publish_gh
 # Explicit Cloudflare Workers Static Assets deployment:
 make publish_cloudflare
@@ -40,8 +40,11 @@ make publish_cloudflare
 
 MkDocs supplies all four targets when `module` is omitted. Set
 `MARKDOWN_PUBLISH_MODULE` to override the configured module at runtime.
-`publish_gh` builds and pushes the publication branch to the configured remote
-(`github` by default).
+For generated engine configuration, the site `name` defaults to the
+`WriteMakefile` `NAME`; set `x_documentation.publish.name` for a friendlier
+title. An authored engine configuration keeps control of its own title.
+`publish_gh` builds and updates the local publication branch without contacting
+a remote. Push the branch through the repository's normal Git workflow.
 `publish_cloudflare` builds and deploys the same site to the Worker named in
 an authored Wrangler config supplied as `cloudflare => {config => 'wrangler.jsonc'}`
 in `x_documentation.publish`. It neither commits nor pushes Git.

@@ -98,10 +98,10 @@ publish_cloudflare
 
 `publish_build` prepares and renders the site. `publish_serve` starts the
 selected engine's foreground local server. `publish_gh` builds, updates the
-publication branch, and pushes it to the configured remote (`github` by
-default). `publish_cloudflare` builds and deploys the same site as Workers
-Static Assets using an authored Wrangler configuration. The last two targets
-are explicit, independent remote operations; neither calls the other.
+local publication branch, and does not contact a remote. `publish_cloudflare`
+builds and deploys the same site as Workers Static Assets using an authored
+Wrangler configuration. Git branch publication and Cloudflare deployment are
+independent; neither calls the other.
 
 # CONFIGURATION
 
@@ -111,8 +111,19 @@ MkDocs is used when `module` is omitted. Set `module` in
 
 Without `sources`, an existing `doc/` is the publication boundary. Only when
 `doc/` is absent are module and executable sidecars the default. An explicit
-`sources` list is exact. `output`, `name`, `branch`, and `remote` are common
-settings; see the selected engine module for its own options.
+`sources` list is exact. `output`, `name`, and `branch` are common settings;
+see the selected engine module for its own options. For generated engine
+configuration, `name` defaults to the `NAME` supplied to `WriteMakefile`. Set
+it explicitly for a friendlier site title:
+
+```perl
+publish => {
+    name => 'Example documentation',
+},
+```
+
+An external `config_file` or an authored engine configuration remains
+authoritative for its own site title.
 
 For Workers Static Assets, set `cloudflare => {config => 'wrangler.jsonc'}`
 inside `publish`. This path selects a dedicated Worker configuration with its
@@ -196,10 +207,10 @@ targets do not re-run C<Makefile.PL> to discover it.
  publish_cloudflare
 C<publish_build> prepares and renders the site. C<publish_serve> starts the
 selected engine's foreground local server. C<publish_gh> builds, updates the
-publication branch, and pushes it to the configured remote (C<github> by
-default). C<publish_cloudflare> builds and deploys the same site as Workers
-Static Assets using an authored Wrangler configuration. The last two targets
-are explicit, independent remote operations; neither calls the other.
+local publication branch, and does not contact a remote. C<publish_cloudflare>
+builds and deploys the same site as Workers Static Assets using an authored
+Wrangler configuration. Git branch publication and Cloudflare deployment are
+independent; neither calls the other.
 
 
 =head1 CONFIGURATION
@@ -210,8 +221,17 @@ C<MARKDOWN_PUBLISH_MODULE> to override it at runtime.
 
 Without C<sources>, an existing C<doc/> is the publication boundary. Only when
 C<doc/> is absent are module and executable sidecars the default. An explicit
-C<sources> list is exact. C<output>, C<name>, C<branch>, and C<remote> are common
-settings; see the selected engine module for its own options.
+C<sources> list is exact. C<output>, C<name>, and C<branch> are common settings;
+see the selected engine module for its own options. For generated engine
+configuration, C<name> defaults to the C<NAME> supplied to C<WriteMakefile>. Set
+it explicitly for a friendlier site title:
+
+
+ publish => {
+     name => 'Example documentation',
+ },
+An external C<config_file> or an authored engine configuration remains
+authoritative for its own site title.
 
 For Workers Static Assets, set C<<< cloudflare => {config => 'wrangler.jsonc'} >>>
 inside C<publish>. This path selects a dedicated Worker configuration with its

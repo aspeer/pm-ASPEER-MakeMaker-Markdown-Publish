@@ -19,9 +19,11 @@ Makefile-safe Base64 value.
 
 ## publish
 
-Decodes the configuration passed by the generated target, constructs
-`ASPEER::Markdown::Publish`, and invokes the requested action on the selected
-backend class.
+Decodes the configuration passed by the generated target. When inline
+configuration does not contain `name`, it uses the MakeMaker `NAME` as the
+default site title. An external `config_file` remains authoritative. The method
+then constructs `ASPEER::Markdown::Publish` and invokes the requested action on
+the selected backend class.
 
 # SEE ALSO
 
