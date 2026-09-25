@@ -107,9 +107,14 @@ like($makefile, qr/^PUBLISH_PM_TARGET=\$\(PERLRUN\) -M\$\(PUBLISH_PM\).*-e /m,
 unlike($makefile, qr/^MM_PREFIX\s*=/m,
     'private Makefile prefix is not emitted');
 
-foreach my $action (qw(build serve gh cloudflare)) {
-    like($makefile, qr/^publish_${action} ::$/m,
-        "$action target generated");
+foreach my $target_ar (
+    [build => 'publish_build'], [serve => 'publish_serve'],
+    [gh => 'publish_gh'], ['gh-push' => 'publish_gh-push'],
+    [cloudflare => 'publish_cloudflare']
+) {
+    my ($action, $target)=@{$target_ar};
+    like($makefile, qr/^\Q$target\E ::$/m,
+        "$target target generated");
     like($makefile,
         qr/^\s*\@\$\(PUBLISH_PM_TARGET\) publish $action$/m,
         "$action target delegates explicitly");
@@ -143,12 +148,14 @@ is(system($make, 'publish_build'), 0, 'generated build target succeeds');
 is(system($make, 'publish_serve'), 0, 'generated local server target delegates');
 is(system($make, 'publish_gh'), 0,
     'generated local publication target delegates');
+is(system($make, 'publish_gh-push'), 0,
+    'generated publication push target delegates');
 is(system($make, 'publish_cloudflare'), 0,
     'generated static-assets deployment target delegates');
 my @target=map {decode_json($_)} grep {length($_)} split(/\n/, slurp('target.log'));
 is_deeply(
     [map {$_->{'action'}} @target],
-    ['build', 'serve', 'gh', 'cloudflare'],
+    ['build', 'serve', 'gh', 'gh-push', 'cloudflare'],
     'generated targets dispatch the selected action'
 );
 my $default_config_hr={%{$config_hr}, name => 'Sample'};

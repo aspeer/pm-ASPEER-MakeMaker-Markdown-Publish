@@ -93,12 +93,15 @@ targets do not re-run `Makefile.PL` to discover it.
 publish_build
 publish_serve
 publish_gh
+publish_gh-push
 publish_cloudflare
 ```
 
 `publish_build` prepares and renders the site. `publish_serve` starts the
 selected engine's foreground local server. `publish_gh` builds, updates the
-local publication branch, and does not contact a remote. `publish_cloudflare`
+local publication branch, and does not contact a remote. `publish_gh-push`
+performs the same operation, then pushes only that branch to `origin` without
+forcing it. `publish_cloudflare`
 builds and deploys the same site as Workers Static Assets using an authored
 Wrangler configuration. Git branch publication and Cloudflare deployment are
 independent; neither calls the other.
@@ -138,6 +141,11 @@ publish => {
     base   => '/example/',
 },
 ```
+
+Set `config_extend` to customise the selected engine's generated configuration
+without replacing it. It is passed unchanged to `ASPEER::Markdown::Publish` and
+cannot be combined with `config`. MkDocs accepts supplemental YAML; the Node
+publishers accept the extension functions documented by their engine modules.
 
 For Workers Static Assets, set `cloudflare => {config => 'wrangler.jsonc'}`
 inside `publish`. This path selects a dedicated Worker configuration with its
@@ -218,10 +226,13 @@ targets do not re-run C<Makefile.PL> to discover it.
  publish_build
  publish_serve
  publish_gh
+ publish_gh-push
  publish_cloudflare
 C<publish_build> prepares and renders the site. C<publish_serve> starts the
 selected engine's foreground local server. C<publish_gh> builds, updates the
-local publication branch, and does not contact a remote. C<publish_cloudflare>
+local publication branch, and does not contact a remote. C<publish_gh-push>
+performs the same operation, then pushes only that branch to C<origin> without
+forcing it. C<publish_cloudflare>
 builds and deploys the same site as Workers Static Assets using an authored
 Wrangler configuration. Git branch publication and Cloudflare deployment are
 independent; neither calls the other.
@@ -259,6 +270,11 @@ uses a different path; authored engine configuration remains authoritative.
      module => 'ASPEER::Markdown::Publish::VitePress',
      base   => '/example/',
  },
+Set C<config_extend> to customise the selected engine's generated configuration
+without replacing it. It is passed unchanged to C<ASPEER::Markdown::Publish> and
+cannot be combined with C<config>. MkDocs accepts supplemental YAML; the Node
+publishers accept the extension functions documented by their engine modules.
+
 For Workers Static Assets, set C<<< cloudflare => {config => 'wrangler.jsonc'} >>>
 inside C<publish>. This path selects a dedicated Worker configuration with its
 name and compatibility date. Optionally set C<wrangler> to the executable path

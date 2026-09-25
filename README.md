@@ -34,11 +34,13 @@ make publish_build
 make publish_serve
 # Update the local publication branch:
 make publish_gh
+# Update it and push that branch to origin:
+make publish_gh-push
 # Explicit Cloudflare Workers Static Assets deployment:
 make publish_cloudflare
 ```
 
-MkDocs supplies all four targets when `module` is omitted. Set
+MkDocs supplies all five targets when `module` is omitted. Set
 `MARKDOWN_PUBLISH_MODULE` to override the configured module at runtime.
 For generated engine configuration, the site `name` defaults to the
 `WriteMakefile` `NAME`; set `x_documentation.publish.name` for a friendlier
@@ -49,7 +51,10 @@ a remote. If `x_documentation.publish.base` is omitted, it derives
 Set it explicitly when the published URL uses another path. Generated
 VitePress, Docusaurus, and Starlight configuration receives this base; an
 authored engine configuration remains authoritative. Push the branch through
-the repository's normal Git workflow.
+the repository's normal Git workflow, or use `publish_gh-push` to update it
+and push only that branch to `origin` without forcing it.
+Set `x_documentation.publish.config_extend` to customise generated engine
+configuration without replacing it; it cannot be combined with `config`.
 `publish_cloudflare` builds and deploys the same site to the Worker named in
 an authored Wrangler config supplied as `cloudflare => {config => 'wrangler.jsonc'}`
 in `x_documentation.publish`. It neither commits nor pushes Git.
