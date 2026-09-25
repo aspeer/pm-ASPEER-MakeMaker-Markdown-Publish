@@ -111,7 +111,7 @@ MkDocs is used when `module` is omitted. Set `module` in
 
 Without `sources`, an existing `doc/` is the publication boundary. Only when
 `doc/` is absent are module and executable sidecars the default. An explicit
-`sources` list is exact. `output`, `name`, and `branch` are common settings;
+`sources` list is exact. `output`, `name`, `base`, and `branch` are common settings;
 see the selected engine module for its own options. For generated engine
 configuration, `name` defaults to the `NAME` supplied to `WriteMakefile`. Set
 it explicitly for a friendlier site title:
@@ -124,6 +124,20 @@ publish => {
 
 An external `config_file` or an authored engine configuration remains
 authoritative for its own site title.
+
+For generated VitePress, Docusaurus, and Starlight configuration, `base` sets
+the deployment path and must begin and end with `/`. When it is omitted,
+`publish_gh` derives `/<repository>/` from the `origin` repository name, or
+uses `/` for an `<owner>.github.io` repository. The inferred value applies
+only to the GitHub Pages build. Set `base` explicitly when the published URL
+uses a different path; authored engine configuration remains authoritative.
+
+```perl
+publish => {
+    module => 'ASPEER::Markdown::Publish::VitePress',
+    base   => '/example/',
+},
+```
 
 For Workers Static Assets, set `cloudflare => {config => 'wrangler.jsonc'}`
 inside `publish`. This path selects a dedicated Worker configuration with its
@@ -221,7 +235,7 @@ C<MARKDOWN_PUBLISH_MODULE> to override it at runtime.
 
 Without C<sources>, an existing C<doc/> is the publication boundary. Only when
 C<doc/> is absent are module and executable sidecars the default. An explicit
-C<sources> list is exact. C<output>, C<name>, and C<branch> are common settings;
+C<sources> list is exact. C<output>, C<name>, C<base>, and C<branch> are common settings;
 see the selected engine module for its own options. For generated engine
 configuration, C<name> defaults to the C<NAME> supplied to C<WriteMakefile>. Set
 it explicitly for a friendlier site title:
@@ -233,6 +247,18 @@ it explicitly for a friendlier site title:
 An external C<config_file> or an authored engine configuration remains
 authoritative for its own site title.
 
+For generated VitePress, Docusaurus, and Starlight configuration, C<base> sets
+the deployment path and must begin and end with C</>. When it is omitted,
+C<publish_gh> derives C<<< /<repository>/ >>> from the C<origin> repository name, or
+uses C</> for an C<<< <owner>.github.io >>> repository. The inferred value applies
+only to the GitHub Pages build. Set C<base> explicitly when the published URL
+uses a different path; authored engine configuration remains authoritative.
+
+
+ publish => {
+     module => 'ASPEER::Markdown::Publish::VitePress',
+     base   => '/example/',
+ },
 For Workers Static Assets, set C<<< cloudflare => {config => 'wrangler.jsonc'} >>>
 inside C<publish>. This path selects a dedicated Worker configuration with its
 name and compatibility date. Optionally set C<wrangler> to the executable path

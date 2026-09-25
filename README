@@ -40,9 +40,14 @@ For generated engine configuration, the site name defaults to the
 WriteMakefile NAME; set x_documentation.publish.name for a friendlier
 title. An authored engine configuration keeps control of its own title.
 publish_gh builds and updates the local publication branch without
-contacting a remote. Push the branch through the repository's normal Git
-workflow. publish_cloudflare builds and deploys the same site to the
-Worker named in an authored Wrangler config supplied as
+contacting a remote. If x_documentation.publish.base is omitted, it
+derives /<repository>/ from origin, or / for an <owner>.github.io
+repository. Set it explicitly when the published URL uses another path.
+Generated VitePress, Docusaurus, and Starlight configuration receives
+this base; an authored engine configuration remains authoritative. Push
+the branch through the repository's normal Git workflow.
+publish_cloudflare builds and deploys the same site to the Worker named
+in an authored Wrangler config supplied as
 cloudflare => {config => 'wrangler.jsonc'} in x_documentation.publish.
 It neither commits nor pushes Git.
 

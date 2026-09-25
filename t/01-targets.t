@@ -80,6 +80,7 @@ WriteMakefile(
             publish => {
                 module  => 'ASPEER::Markdown::Publish::MkDocs',
                 sources => ['doc'],
+                base    => '/sample-docs/',
                 output  => 'public',
                 config  => 'doc/mkdocs/custom.yml',
                 address => '127.0.0.1:8123',
@@ -122,6 +123,7 @@ my ($encoded)=$makefile=~/^PUBLISH_CONFIG\s*=\s*(\S+)$/m;
 ok(defined($encoded) && length($encoded), 'publication configuration macro generated');
 my $config_hr=decode_json(decode_base64($encoded));
 is_deeply($config_hr->{'sources'}, ['doc'], 'source directories encoded');
+is($config_hr->{'base'}, '/sample-docs/', 'publication base encoded');
 is($config_hr->{'module'}, 'ASPEER::Markdown::Publish::MkDocs',
     'selected module encoded');
 is($config_hr->{'config'}, 'doc/mkdocs/custom.yml',
