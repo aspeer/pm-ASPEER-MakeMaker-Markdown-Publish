@@ -46,14 +46,14 @@ my $common_pm_fn=abs_path($INC{'ASPEER/MakeMaker/MM.pm'});
 $common_pm_fn=~s{[/\\]ASPEER[/\\]MakeMaker[/\\]MM\.pm$}{};
 my $temporary_dn=tempdir(CLEANUP => 1);
 chdir($temporary_dn) || die "unable to chdir $temporary_dn: $!";
-make_path('lib/Sample', 'doc', 'local lib/ASPEER/Markdown');
+make_path('lib/Sample', 'doc', 'local lib/Markdown');
 my $local_lib_dn=abs_path('local lib');
 
 
 #  The runtime publisher stub records exactly what the generated target passes
 #
-blurp('local lib/ASPEER/Markdown/Publish.pm', <<'PUBLISH_STUB');
-package ASPEER::Markdown::Publish;
+blurp('local lib/Markdown/Publish.pm', <<'PUBLISH_STUB');
+package Markdown::Publish;
 use JSON::PP qw(encode_json);
 sub new {my ($class, $config_hr)=@_; return bless({config => $config_hr}, $class)}
 sub run {
@@ -81,7 +81,7 @@ WriteMakefile(
         'meta-spec' => {version => 2},
         x_documentation => {
             publish => {
-                module  => 'ASPEER::Markdown::Publish::MkDocs',
+                module  => 'Markdown::Publish::MkDocs',
                 sources => ['doc'],
                 base    => '/sample-docs/',
                 output  => 'public',
@@ -136,7 +136,7 @@ ok(defined($encoded) && length($encoded), 'publication configuration macro gener
 my $config_hr=decode_json(decode_base64($encoded));
 is_deeply($config_hr->{'sources'}, ['doc'], 'source directories encoded');
 is($config_hr->{'base'}, '/sample-docs/', 'publication base encoded');
-is($config_hr->{'module'}, 'ASPEER::Markdown::Publish::MkDocs',
+is($config_hr->{'module'}, 'Markdown::Publish::MkDocs',
     'selected module encoded');
 is($config_hr->{'config'}, 'doc/mkdocs/custom.yml',
     'MkDocs configuration location encoded');

@@ -77,7 +77,7 @@ WriteMakefile(
         'meta-spec' => {version => 2},
         x_documentation => {
             publish => {
-                module  => 'ASPEER::Markdown::Publish::MkDocs',
+                module  => 'Markdown::Publish::MkDocs',
                 sources => ['doc'],
                 config  => 'doc/mkdocs/mkdocs.yml',
             },
@@ -90,7 +90,7 @@ WriteMakefile(
 
 This is a thin MakeMaker adapter. It reads `META_MERGE.x_documentation.publish`
 from the live `WriteMakefile` arguments and passes the settings to
-`ASPEER::Markdown::Publish` when a target is invoked. It does not assemble
+`Markdown::Publish` when a target is invoked. It does not assemble
 documents, run a publishing engine, or update Git itself.
 
 Importing this module also imports `ASPEER::MakeMaker::Markdown::Pod`, so the
@@ -101,7 +101,7 @@ the publication targets. The equivalent command-line activation is:
 perl -MASPEER::MakeMaker::Markdown::Publish Makefile.PL
 ```
 
-The selected `module` is one of `ASPEER::Markdown::Publish::MkDocs`,
+The selected `module` is one of `Markdown::Publish::MkDocs`,
 `::VitePress`, `::Docusaurus`, or `::Starlight`. One engine is active at a
 time. Its `config` and other engine-specific options are top-level values
 in the `publish` hash. Alternatively, set only `config_file` to a JSON file
@@ -163,13 +163,13 @@ uses a different path; authored engine configuration remains authoritative.
 
 ```perl
 publish => {
-    module => 'ASPEER::Markdown::Publish::VitePress',
+    module => 'Markdown::Publish::VitePress',
     base   => '/example/',
 },
 ```
 
 Set `config_extend` to customise the selected engine's generated configuration
-without replacing it. It is passed unchanged to `ASPEER::Markdown::Publish` and
+without replacing it. It is passed unchanged to `Markdown::Publish` and
 cannot be combined with `config`. MkDocs accepts supplemental YAML; the Node
 publishers accept the extension functions documented by their engine modules.
 
@@ -187,7 +187,7 @@ supplied. Invalid configuration and failed target actions are fatal.
 
 # SEE ALSO
 
-`ASPEER::Markdown::Publish`, `ASPEER::MakeMaker::Markdown::Pod`
+`Markdown::Publish`, `ASPEER::MakeMaker::Markdown::Pod`
 
 # AUTHOR
 
@@ -220,7 +220,7 @@ ASPEER::MakeMaker::Markdown::Publish - MakeMaker targets for Markdown publicatio
          'meta-spec' => {version => 2},
          x_documentation => {
              publish => {
-                 module  => 'ASPEER::Markdown::Publish::MkDocs',
+                 module  => 'Markdown::Publish::MkDocs',
                  sources => ['doc'],
                  config  => 'doc/mkdocs/mkdocs.yml',
              },
@@ -232,7 +232,7 @@ ASPEER::MakeMaker::Markdown::Publish - MakeMaker targets for Markdown publicatio
 
 This is a thin MakeMaker adapter. It reads C<META_MERGE.x_documentation.publish>
 from the live C<WriteMakefile> arguments and passes the settings to
-C<ASPEER::Markdown::Publish> when a target is invoked. It does not assemble
+C<Markdown::Publish> when a target is invoked. It does not assemble
 documents, run a publishing engine, or update Git itself.
 
 Importing this module also imports C<ASPEER::MakeMaker::Markdown::Pod>, so the
@@ -241,7 +241,7 @@ the publication targets. The equivalent command-line activation is:
 
 
  perl -MASPEER::MakeMaker::Markdown::Publish Makefile.PL
-The selected C<module> is one of C<ASPEER::Markdown::Publish::MkDocs>,
+The selected C<module> is one of C<Markdown::Publish::MkDocs>,
 C<::VitePress>, C<::Docusaurus>, or C<::Starlight>. One engine is active at a
 time. Its C<config> and other engine-specific options are top-level values
 in the C<publish> hash. Alternatively, set only C<config_file> to a JSON file
@@ -301,11 +301,11 @@ uses a different path; authored engine configuration remains authoritative.
 
 
  publish => {
-     module => 'ASPEER::Markdown::Publish::VitePress',
+     module => 'Markdown::Publish::VitePress',
      base   => '/example/',
  },
 Set C<config_extend> to customise the selected engine's generated configuration
-without replacing it. It is passed unchanged to C<ASPEER::Markdown::Publish> and
+without replacing it. It is passed unchanged to C<Markdown::Publish> and
 cannot be combined with C<config>. MkDocs accepts supplemental YAML; the Node
 publishers accept the extension functions documented by their engine modules.
 
@@ -325,7 +325,7 @@ supplied. Invalid configuration and failed target actions are fatal.
 
 =head1 SEE ALSO
 
-C<ASPEER::Markdown::Publish>, C<ASPEER::MakeMaker::Markdown::Pod>
+C<Markdown::Publish>, C<ASPEER::MakeMaker::Markdown::Pod>
 
 
 =head1 AUTHOR

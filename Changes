@@ -1,7 +1,11 @@
 Revision history for ASPEER-MakeMaker-Markdown-Publish
 
-0.001  2026-09-22
+1.002  2026-09-26
 
     - Initial release.
     - Add MakeMaker targets for each supported publishing backend.
     - Pass x_documentation publishing configuration to the reusable engine.
+    - Load ASPEER::MakeMaker::Markdown::Pod so publication-enabled
+      Makefile.PL files also receive the local documentation targets.
+    - Derive the default site title from WriteMakefile metadata.
+    - Add local GitHub Pages branch preparation and explicit push targets.

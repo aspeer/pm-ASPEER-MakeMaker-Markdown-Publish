@@ -6,7 +6,7 @@ MkDocs, VitePress, Docusaurus, or Astro Starlight.
 The module is deliberately a thin adapter. It reads
 `META_MERGE.x_documentation.publish` from the live `WriteMakefile` arguments,
 encodes that configuration into the generated Makefile, and delegates every
-target to `ASPEER::Markdown::Publish`.
+target to `Markdown::Publish`.
 
 It also loads `ASPEER::MakeMaker::Markdown::Pod`, so one import supplies the
 `doc` and `readme` maintenance targets as well as the publication targets.

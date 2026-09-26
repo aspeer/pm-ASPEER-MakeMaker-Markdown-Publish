@@ -83,6 +83,15 @@ target dispatcher module, and fixed MakeMaker argument list used by
 The final argument is `PUBLISH_CONFIG`, the Base64-encoded JSON value derived
 from `META_MERGE.x_documentation.publish`.
 
+# AUTHOR
+
+Andrew Speer <andrew.speer@isolutions.com.au>
+
+# LICENSE AND COPYRIGHT
+
+This software is copyright (c) 2026 by Andrew Speer. It may be distributed
+under the same terms as Perl itself.
+
 =end markdown
 
 
@@ -99,5 +108,16 @@ C<ASPEER::MakeMaker::Markdown::Publish>.
 
 The final argument is C<PUBLISH_CONFIG>, the Base64-encoded JSON value derived
 from C<META_MERGE.x_documentation.publish>.
+
+
+=head1 AUTHOR
+
+Andrew Speer L<mailto:andrew.speer@isolutions.com.au>
+
+
+=head1 LICENSE AND COPYRIGHT
+
+This software is copyright (c) 2026 by Andrew Speer. It may be distributed
+under the same terms as Perl itself.
 
 =cut

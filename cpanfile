@@ -1,6 +1,6 @@
-requires 'ASPEER::MakeMaker', '1.006';
-requires 'ASPEER::MakeMaker::Markdown::Pod', '0.012';
-requires 'ASPEER::Markdown::Publish', '0.001';
+requires 'ASPEER::MakeMaker', '1.010';
+requires 'ASPEER::MakeMaker::Markdown::Pod', '1.010';
+requires 'Markdown::Publish', '1.001';
 requires 'Cwd';
 requires 'File::Basename';
 requires 'File::Spec';
