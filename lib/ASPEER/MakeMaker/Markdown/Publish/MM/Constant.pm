@@ -21,7 +21,7 @@ use Cwd qw(abs_path);
 use File::Basename qw(dirname);
 use File::Spec;
 
-$VERSION='1.002';
+$VERSION='1.003';
 
 my $local_fn=abs_path(__FILE__).'.local';
 
@@ -88,10 +88,19 @@ from `META_MERGE.x_documentation.publish`.
 
 Andrew Speer <andrew.speer@isolutions.com.au>
 
-# LICENSE AND COPYRIGHT
+# LICENSE and COPYRIGHT
 
-This software is copyright (c) 2026 by Andrew Speer. It may be distributed
-under the same terms as Perl itself.
+This file is part of ASPEER::MakeMaker::Markdown::Publish.
+
+This software is copyright (c) 2026 by Andrew Speer <andrew.speer@isolutions.com.au>.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+Full license text is available at:
+
+<http://dev.perl.org/licenses/>
+
 
 =end markdown
 
