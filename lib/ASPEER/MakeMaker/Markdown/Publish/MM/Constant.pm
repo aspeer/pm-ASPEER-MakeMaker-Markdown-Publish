@@ -20,7 +20,7 @@ use Cwd qw(abs_path);
 use File::Basename qw(dirname);
 use File::Spec;
 
-$VERSION='0.001';
+$VERSION='1.001';
 
 my $local_fn=abs_path(__FILE__).'.local';
 

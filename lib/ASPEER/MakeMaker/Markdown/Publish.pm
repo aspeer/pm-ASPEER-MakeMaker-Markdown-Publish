@@ -32,7 +32,7 @@ use ASPEER::MakeMaker::Markdown::Publish::MM ();
 #  Version information
 #
 $AUTHORITY='cpan:ASPEER';
-$VERSION='0.001';
+$VERSION='1.001';
 $VERSION_GIT_SHA=do {local(@ARGV, $/, $_); @ARGV=($_=__FILE__.'.sha'); <> if -f $_};
 chomp($VERSION_GIT_SHA) if defined($VERSION_GIT_SHA);
 

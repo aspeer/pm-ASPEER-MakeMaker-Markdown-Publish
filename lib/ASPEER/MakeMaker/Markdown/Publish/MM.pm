@@ -33,7 +33,7 @@ use MIME::Base64 qw(decode_base64 encode_base64);
 
 #  Version information
 #
-$VERSION='0.001';
+$VERSION='1.001';
 
 
 #  Done
