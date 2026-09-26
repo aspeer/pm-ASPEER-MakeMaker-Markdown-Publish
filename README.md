@@ -3,6 +3,24 @@
 Add MakeMaker targets for publishing Perl distribution documentation through
 MkDocs, VitePress, Docusaurus, or Astro Starlight.
 
+## GitHub Attestations
+
+The release workflow generates [GitHub artifact attestations](https://docs.github.com/en/actions/concepts/security/artifact-attestations)
+for distribution archives. Install the [GitHub CLI](https://cli.github.com/)
+with `gh attestation` support and authenticate with `gh auth login`.
+
+Download `ASPEER-MakeMaker-Markdown-Publish-VERSION.tar.gz` from a GitHub
+release, MetaCPAN, or a CPAN mirror, replace `VERSION`, and verify it with:
+
+```sh
+gh attestation verify ASPEER-MakeMaker-Markdown-Publish-VERSION.tar.gz --repo aspeer/pm-ASPEER-MakeMaker-Markdown-Publish
+```
+
+A successful verification confirms that the archive checksum matches an
+attestation from this repository. The workflow publishes the same archive to
+GitHub Releases and CPAN. Older releases and GitHub's automatically generated
+source-code archives are not covered.
+
 The module is deliberately a thin adapter. It reads
 `META_MERGE.x_documentation.publish` from the live `WriteMakefile` arguments,
 encodes that configuration into the generated Makefile, and delegates every
