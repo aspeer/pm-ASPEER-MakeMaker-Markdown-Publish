@@ -24,6 +24,7 @@ use warnings;
 #  publication remains in the backend-neutral publishing module.
 #
 use ASPEER::MakeMaker ();
+use ASPEER::MakeMaker::Markdown::Pod ();
 use ASPEER::MakeMaker::Markdown::Publish::MM ();
 @ISA=qw(ASPEER::MakeMaker);
 
@@ -39,6 +40,21 @@ chomp($VERSION_GIT_SHA) if defined($VERSION_GIT_SHA);
 #  Done
 #
 1;
+
+
+#======================================================================================================================
+
+sub import {
+
+
+    #  Install documentation maintenance before wrapping the same MakeMaker
+    #  sections with publication targets.
+    #
+    my ($class, @section)=@_;
+    ASPEER::MakeMaker::Markdown::Pod->import(@section);
+    return ASPEER::MakeMaker::import($class, @section);
+
+}
 
 __END__
 
@@ -77,6 +93,14 @@ from the live `WriteMakefile` arguments and passes the settings to
 `ASPEER::Markdown::Publish` when a target is invoked. It does not assemble
 documents, run a publishing engine, or update Git itself.
 
+Importing this module also imports `ASPEER::MakeMaker::Markdown::Pod`, so the
+generated Makefile includes its `doc` and `readme` maintenance targets alongside
+the publication targets. The equivalent command-line activation is:
+
+```text
+perl -MASPEER::MakeMaker::Markdown::Publish Makefile.PL
+```
+
 The selected `module` is one of `ASPEER::Markdown::Publish::MkDocs`,
 `::VitePress`, `::Docusaurus`, or `::Starlight`. One engine is active at a
 time. Its `config` and other engine-specific options are top-level values
@@ -90,6 +114,8 @@ targets do not re-run `Makefile.PL` to discover it.
 # TARGETS
 
 ```text
+doc
+readme
 publish_build
 publish_serve
 publish_gh
@@ -209,6 +235,12 @@ from the live C<WriteMakefile> arguments and passes the settings to
 C<ASPEER::Markdown::Publish> when a target is invoked. It does not assemble
 documents, run a publishing engine, or update Git itself.
 
+Importing this module also imports C<ASPEER::MakeMaker::Markdown::Pod>, so the
+generated Makefile includes its C<doc> and C<readme> maintenance targets alongside
+the publication targets. The equivalent command-line activation is:
+
+
+ perl -MASPEER::MakeMaker::Markdown::Publish Makefile.PL
 The selected C<module> is one of C<ASPEER::Markdown::Publish::MkDocs>,
 C<::VitePress>, C<::Docusaurus>, or C<::Starlight>. One engine is active at a
 time. Its C<config> and other engine-specific options are top-level values
@@ -223,6 +255,8 @@ targets do not re-run C<Makefile.PL> to discover it.
 =head1 TARGETS
 
 
+ doc
+ readme
  publish_build
  publish_serve
  publish_gh

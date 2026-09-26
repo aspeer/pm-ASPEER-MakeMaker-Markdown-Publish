@@ -8,6 +8,9 @@ The module is deliberately a thin adapter. It reads
 encodes that configuration into the generated Makefile, and delegates every
 target to `ASPEER::Markdown::Publish`.
 
+It also loads `ASPEER::MakeMaker::Markdown::Pod`, so one import supplies the
+`doc` and `readme` maintenance targets as well as the publication targets.
+
 ```perl
 use ExtUtils::MakeMaker;
 use ASPEER::MakeMaker::Markdown::Publish;
@@ -30,6 +33,7 @@ WriteMakefile(
 After regenerating the Makefile:
 
 ```sh
+make doc
 make publish_build
 make publish_serve
 # Update the local publication branch:
@@ -38,6 +42,12 @@ make publish_gh
 make publish_gh-push
 # Explicit Cloudflare Workers Static Assets deployment:
 make publish_cloudflare
+```
+
+The same combined target set can be enabled without editing `Makefile.PL`:
+
+```sh
+perl -MASPEER::MakeMaker::Markdown::Publish Makefile.PL
 ```
 
 MkDocs supplies all five targets when `module` is omitted. Set

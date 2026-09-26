@@ -31,6 +31,14 @@ from the live `WriteMakefile` arguments and passes the settings to
 `ASPEER::Markdown::Publish` when a target is invoked. It does not assemble
 documents, run a publishing engine, or update Git itself.
 
+Importing this module also imports `ASPEER::MakeMaker::Markdown::Pod`, so the
+generated Makefile includes its `doc` and `readme` maintenance targets alongside
+the publication targets. The equivalent command-line activation is:
+
+```text
+perl -MASPEER::MakeMaker::Markdown::Publish Makefile.PL
+```
+
 The selected `module` is one of `ASPEER::Markdown::Publish::MkDocs`,
 `::VitePress`, `::Docusaurus`, or `::Starlight`. One engine is active at a
 time. Its `config` and other engine-specific options are top-level values
@@ -44,6 +52,8 @@ targets do not re-run `Makefile.PL` to discover it.
 # TARGETS
 
 ```text
+doc
+readme
 publish_build
 publish_serve
 publish_gh

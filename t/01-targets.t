@@ -66,6 +66,9 @@ sub run {
 1;
 PUBLISH_STUB
 blurp('lib/Sample.pm', "package Sample;\nour \$VERSION='0.001';\n1;\n");
+blurp('lib/Sample.pm.md', "# NAME\n\nSample - generated documentation target fixture\n");
+blurp('README.md', "# Sample\n\nGenerated documentation target fixture.\n");
+blurp('MANIFEST', "lib/Sample.pm\nlib/Sample.pm.md\nREADME.md\ndoc/guide.md\n");
 blurp('doc/guide.md', "# Guide\n\nText.\n");
 blurp('Makefile.PL', <<'MAKEFILE_PL');
 use strict;
@@ -102,6 +105,8 @@ local $ENV{'PERL5LIB'}=join(
 is(system($^X, '-MASPEER::MakeMaker::Markdown::Publish', 'Makefile.PL'), 0,
     'Makefile.PL succeeds with publication plugin');
 my $makefile=slurp('Makefile');
+like($makefile, qr/^PERLRUN\s*=.*-MASPEER::MakeMaker::Markdown::Pod.*-MASPEER::MakeMaker::Markdown::Publish/m,
+    'generated commands reload documentation before publication integration');
 like($makefile, qr/^PUBLISH_PM_TARGET=\$\(PERLRUN\) -M\$\(PUBLISH_PM\).*-e /m,
     'target command explicitly reloads the publication dispatcher');
 unlike($makefile, qr/^MM_PREFIX\s*=/m,
@@ -120,6 +125,8 @@ foreach my $target_ar (
         "$action target delegates explicitly");
 }
 unlike($makefile, qr/^mkdocs_build ::$/m, 'backend-specific targets are absent');
+my @doc_target=($makefile=~/^doc :: readme$/mg);
+is(scalar(@doc_target), 1, 'publication import generates one doc target');
 
 
 #  Decode the private macro to prove values came from live META_MERGE input
@@ -144,6 +151,11 @@ ok(!exists($config_hr->{'name'}),
 #  Execute generated targets through make and inspect the delegated calls
 #
 my $make=$Config{'make'} || 'make';
+is(system($make, 'doc'), 0, 'generated documentation target succeeds');
+like(slurp('lib/Sample.pm'), qr/^=head1 NAME$/m,
+    'generated documentation target processes the sidecar');
+is(system($^X, '-MASPEER::MakeMaker::Markdown::Publish', 'Makefile.PL'), 0,
+    'Makefile regenerates after documentation updates VERSION_FROM');
 is(system($make, 'publish_build'), 0, 'generated build target succeeds');
 is(system($make, 'publish_serve'), 0, 'generated local server target delegates');
 is(system($make, 'publish_gh'), 0,
@@ -176,6 +188,19 @@ is(system($make, 'publish_build'), 0,
 @target=map {decode_json($_)} grep {length($_)} split(/\n/, slurp('target.log'));
 is($target[-1]{'config'}{'name'}, 'Sample documentation',
     'explicit publication name overrides the default');
+
+
+#  Explicit and composed Pod imports remain idempotent
+#
+my $explicit=slurp('Makefile.PL');
+$explicit=~s/(use ExtUtils::MakeMaker;\n)/$1use ASPEER::MakeMaker::Markdown::Pod;\n/ ||
+    die "unable to construct explicit Pod import fixture";
+blurp('Makefile.PL', $explicit);
+is(system($^X, '-MASPEER::MakeMaker::Markdown::Publish', 'Makefile.PL'), 0,
+    'explicit Pod and command-line publication imports succeed together');
+$makefile=slurp('Makefile');
+@doc_target=($makefile=~/^doc :: readme$/mg);
+is(scalar(@doc_target), 1, 'combined imports generate one doc target');
 
 
 #  Invalid custom metadata is rejected while generating the Makefile

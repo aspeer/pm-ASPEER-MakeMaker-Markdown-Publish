@@ -1,4 +1,4 @@
-use 5.008;
+use 5.010;
 use strict;
 use warnings;
 use version;
@@ -35,19 +35,20 @@ my %WriteMakefile=(
     EXE_FILES        => [],
     LICENSE          => 'perl',
     AUTHOR           => 'Andrew Speer <andrew.speer@isolutions.com.au>',
-    MIN_PERL_VERSION => '5.008',
+    MIN_PERL_VERSION => '5.010',
     PREREQ_PM        => {
-        'ASPEER::MakeMaker'          => '1.006',
-        'ASPEER::Markdown::Publish'  => '0.001',
-        'Cwd'                        => 0,
-        'File::Basename'             => 0,
-        'File::Spec'                 => 0,
-        'JSON::PP'                   => 0,
-        'MIME::Base64'               => 0,
-        'Exporter'                   => 0,
-        'strict'                     => 0,
-        'vars'                       => 0,
-        'warnings'                   => 0,
+        'ASPEER::MakeMaker'                  => '1.006',
+        'ASPEER::MakeMaker::Markdown::Pod'   => '0.012',
+        'ASPEER::Markdown::Publish'          => '0.001',
+        'Cwd'                                => 0,
+        'File::Basename'                     => 0,
+        'File::Spec'                         => 0,
+        'JSON::PP'                           => 0,
+        'MIME::Base64'                       => 0,
+        'Exporter'                           => 0,
+        'strict'                             => 0,
+        'vars'                               => 0,
+        'warnings'                           => 0,
     },
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => 0,
@@ -61,13 +62,6 @@ my %WriteMakefile=(
     },
     META_MERGE => {
         'meta-spec' => {version => 2},
-        prereqs     => {
-            configure => {
-                suggests => {
-                    'ASPEER::MakeMaker::Markdown::Pod' => '0.012',
-                },
-            },
-        },
         resources   => {
             bugtracker => {
                 web => 'https://gitea.isolutions.com.au/aspeer/pm-ASPEER-MakeMaker-Markdown-Publish/issues',
