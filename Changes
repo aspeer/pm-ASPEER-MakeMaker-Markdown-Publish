@@ -9,3 +9,4 @@ Revision history for ASPEER-MakeMaker-Markdown-Publish
       Makefile.PL files also receive the local documentation targets.
     - Derive the default site title from WriteMakefile metadata.
     - Add local GitHub Pages branch preparation and explicit push targets.
+    - Install pandoc in GitHub Actions for documentation integration tests.

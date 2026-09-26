@@ -32,7 +32,7 @@ use ASPEER::MakeMaker::Markdown::Publish::MM ();
 #  Version information
 #
 $AUTHORITY='cpan:ASPEER';
-$VERSION='1.001';
+$VERSION='1.002';
 $VERSION_GIT_SHA=do {local(@ARGV, $/, $_); @ARGV=($_=__FILE__.'.sha'); <> if -f $_};
 chomp($VERSION_GIT_SHA) if defined($VERSION_GIT_SHA);
 
@@ -193,11 +193,19 @@ supplied. Invalid configuration and failed target actions are fatal.
 
 Andrew Speer <andrew.speer@isolutions.com.au>
 
-# LICENSE AND COPYRIGHT
+# LICENSE and COPYRIGHT
 
-This file is part of ASPEER::MakeMaker::Markdown::Publish. Copyright (c) 2026
-Andrew Speer. This is free software; you can redistribute it and/or modify it
-under the same terms as Perl 5.
+This file is part of ASPEER::MakeMaker::Markdown::Publish.
+
+This software is copyright (c) 2026 by Andrew Speer <andrew.speer@isolutions.com.au>.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+Full license text is available at:
+
+<http://dev.perl.org/licenses/>
+
 
 =end markdown
 
