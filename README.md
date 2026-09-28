@@ -93,8 +93,28 @@ and push only that branch to `origin` without forcing it.
 Set `x_documentation.publish.config_extend` to customise generated engine
 configuration without replacing it; it cannot be combined with `config`.
 `publish_cloudflare` builds and deploys the same site to the Worker named in
-an authored Wrangler config supplied as `cloudflare => {config => 'wrangler.jsonc'}`
-in `x_documentation.publish`. It neither commits nor pushes Git.
+`wrangler.jsonc`, or `wrangler.json` as a fallback, in the project root. Set
+`cloudflare => {config => 'deploy/wrangler.docs.jsonc'}` in
+`x_documentation.publish` only when the config lives elsewhere. The target
+neither commits nor pushes Git.
+
+A minimal project-root `wrangler.jsonc` is:
+
+```jsonc
+{
+  "name": "example-documentation",
+  "compatibility_date": "2026-09-29"
+}
+```
+
+The target supplies the generated site using Wrangler's `--assets` option, so
+this file does not need an `assets.directory` setting. Choose a unique Worker
+name, authenticate Wrangler, regenerate the Makefile, and publish:
+
+```sh
+perl Makefile.PL
+make publish_cloudflare
+```
 
 See the [module documentation](lib/ASPEER/MakeMaker/Markdown/Publish.pm.md) and
 [examples](examples/README.md).
